@@ -19,13 +19,19 @@ public class Spawner : MonoBehaviour
 
     private IEnumerator Spawn()
     {
+        var wait = new WaitForSeconds(_spawnDelay);
+
         while (_isSpawn)
         {
             var spawnPoint = _spawnPoints[Random.Range(0, _spawnPoints.Count)];
             spawnPoint.position = new Vector3(spawnPoint.position.x, _enemy.transform.localScale.y, spawnPoint.position.z);
-            spawnPoint.Rotate(0, Random.Range(-180, 180), 0);
-            Instantiate(_enemy, spawnPoint.position, spawnPoint.rotation);
-            yield return new WaitForSeconds(_spawnDelay);
+            var randomRotation = new Vector3(0, Random.Range(-180, 180), 0);
+            var randomDirection = Quaternion.Euler(randomRotation) * Vector3.forward;
+
+            _enemy.MoveDirection = randomDirection;
+
+            Instantiate(_enemy, spawnPoint.transform.position, Quaternion.Euler(randomRotation));
+            yield return wait;
         }
     }
 }
