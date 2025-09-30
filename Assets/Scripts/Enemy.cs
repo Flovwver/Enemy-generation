@@ -10,13 +10,14 @@ public class Enemy : MonoBehaviour
 
     private Rigidbody _rigidbody;
 
-    public Vector3 MoveDirection
+    public  Vector3 MoveDirection
     {
         get => _moveDirection;
         set
         {
             if (value == Vector3.zero)
                 return;
+
             _moveDirection = value.normalized;
         }
     }
@@ -28,6 +29,9 @@ public class Enemy : MonoBehaviour
 
     private void FixedUpdate()
     {
-        _rigidbody.MovePosition(transform.position + _moveSpeed * _moveDirection);
+        if (MoveDirection == Vector3.zero)
+            return;
+
+        _rigidbody.MovePosition(transform.position + _moveSpeed * MoveDirection);
     }
 }

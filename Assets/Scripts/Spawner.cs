@@ -25,7 +25,8 @@ public class Spawner : MonoBehaviour
         {
             var spawnPoint = _spawnPoints[Random.Range(0, _spawnPoints.Count)];
             spawnPoint.position = new Vector3(spawnPoint.position.x, _enemy.transform.localScale.y, spawnPoint.position.z);
-            var randomRotation = new Vector3(0, Random.Range(-180, 180), 0);
+            var maxAngle = 360;
+            var randomRotation = new Vector3(0, Random.Range(0, maxAngle), 0);
             var randomDirection = Quaternion.Euler(randomRotation) * Vector3.forward;
 
             _enemy.MoveDirection = randomDirection;
