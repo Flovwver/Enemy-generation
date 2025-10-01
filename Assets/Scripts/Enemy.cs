@@ -5,20 +5,22 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class Enemy : MonoBehaviour
 {
-    [SerializeField] private float _moveSpeed = 5f;
-    [SerializeField] private Vector3 _moveDirection = Vector3.forward;
+    [SerializeField] private float _speed = 5f;
+    [SerializeField] private Target _target;
 
     private Rigidbody _rigidbody;
 
-    public  Vector3 MoveDirection
+    private Vector3 DirectionToTarget 
     {
-        get => _moveDirection;
-        set
+        get
         {
-            if (value == Vector3.zero)
-                return;
+            if (_target == null)
+                return Vector3.zero;
 
-            _moveDirection = value.normalized;
+            var directionToTarget = (_target.transform.position - transform.position).normalized; 
+            directionToTarget.y = 0;
+
+            return directionToTarget;
         }
     }
 
@@ -29,9 +31,22 @@ public class Enemy : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (MoveDirection == Vector3.zero)
+        MoveToTarget();
+    }
+
+    public void SetTarget(Target target)
+    {
+        if (target == null)
             return;
 
-        _rigidbody.MovePosition(transform.position + _moveSpeed * MoveDirection);
+        _target = target;
+    }
+
+    private void MoveToTarget()
+    {
+        if (DirectionToTarget == Vector3.zero)
+            return;
+
+        _rigidbody.MovePosition(transform.position + _speed * DirectionToTarget);
     }
 }

@@ -1,13 +1,11 @@
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
-using Unity.VisualScripting;
 
 public class Spawner : MonoBehaviour
 {
-    [SerializeField] private Enemy _enemy;
     [SerializeField] private float _spawnDelay = 2f;
-    [SerializeField] private List<Transform> _spawnPoints = new();
+    [SerializeField] private List<SpawnPoint> _spawnPoints = new();
     [SerializeField] private bool _isSpawn = true;
 
     private Coroutine _spawnRoutine;
@@ -24,14 +22,14 @@ public class Spawner : MonoBehaviour
         while (_isSpawn)
         {
             var spawnPoint = _spawnPoints[Random.Range(0, _spawnPoints.Count)];
-            spawnPoint.position = new Vector3(spawnPoint.position.x, _enemy.transform.localScale.y, spawnPoint.position.z);
-            var maxAngle = 360;
-            var randomRotation = new Vector3(0, Random.Range(0, maxAngle), 0);
-            var randomDirection = Quaternion.Euler(randomRotation) * Vector3.forward;
+            var enemyPrefab = spawnPoint.EnemyPrefab;
+            var spawnPosition = new Vector3(spawnPoint.transform.position.x, enemyPrefab.transform.localScale.y, spawnPoint.transform.position.z);
+            var target = spawnPoint.Target;
 
-            _enemy.MoveDirection = randomDirection;
+            var enemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.Euler(0, 0, 0));
 
-            Instantiate(_enemy, spawnPoint.transform.position, Quaternion.Euler(randomRotation));
+            enemy.SetTarget(target);
+
             yield return wait;
         }
     }
