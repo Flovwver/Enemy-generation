@@ -5,8 +5,10 @@ using UnityEngine;
 public class Spawner : MonoBehaviour
 {
     [SerializeField] private float _spawnDelay = 2f;
-    [SerializeField] private List<SpawnPoint> _spawnPoints = new();
+    [SerializeField] private Transform _spawnPoint;
     [SerializeField] private bool _isSpawn = true;
+    [SerializeField] private Enemy _enemyPrefab;
+    [SerializeField] private Target _target;
 
     private Coroutine _spawnRoutine;
 
@@ -21,14 +23,11 @@ public class Spawner : MonoBehaviour
 
         while (_isSpawn)
         {
-            var spawnPoint = _spawnPoints[Random.Range(0, _spawnPoints.Count)];
-            var enemyPrefab = spawnPoint.EnemyPrefab;
-            var spawnPosition = new Vector3(spawnPoint.transform.position.x, enemyPrefab.transform.localScale.y, spawnPoint.transform.position.z);
-            var target = spawnPoint.Target;
+            var spawnPosition = new Vector3(_spawnPoint.position.x, _enemyPrefab.transform.localScale.y, _spawnPoint.position.z);
 
-            var enemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.Euler(0, 0, 0));
+            var enemy = Instantiate(_enemyPrefab, spawnPosition, Quaternion.Euler(0, 0, 0));
 
-            enemy.SetTarget(target);
+            enemy.SetTarget(_target);
 
             yield return wait;
         }
